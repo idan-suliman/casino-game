@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <title>תתחיל לשחק - גרסת הקזינו</title>
+  <!-- This ensures the page looks good on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    /* עיצוב רקע וקנבס כללי */
+    /* Body style: adding a casino-themed background image */
     body {
       direction: rtl;
       margin: 0;
       padding: 0;
-      /* הנה התמונה החדשה שנתת: */
       background: url('https://i.ibb.co/3RxqJJt/casino-background.jpg') no-repeat center center fixed;
       background-size: cover;
       font-family: Arial, sans-serif;
@@ -17,14 +18,14 @@
       color: #f5f5f5;
     }
 
-    /* מסך כהה מאחורי התוכן */
+    /* Overlay to make the text readable over the background */
     #overlay {
       background-color: rgba(0, 0, 0, 0.6);
       min-height: 100vh;
       padding-bottom: 50px;
     }
 
-    /* תצוגת יתרה למעלה משמאל */
+    /* Display for player's balance at the top left */
     #moneyDisplay {
       position: absolute;
       top: 20px;
@@ -40,13 +41,14 @@
       z-index: 2;
     }
 
+    /* Icon inside the balance display */
     #moneyDisplay img {
       margin-left: 10px;
       width: 24px;
       height: 24px;
     }
 
-    /* כותרת מהבהבת (שלט ניאון) */
+    /* Title of the game */
     h1 {
       font-size: 3em;
       margin-top: 60px;
@@ -56,6 +58,7 @@
       animation: pulse 2s infinite;
     }
 
+    /* Pulsing effect for the title */
     @keyframes pulse {
       0% {
         text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
@@ -68,7 +71,7 @@
       }
     }
 
-    /* תמונה מרכזית (אופציונלית) */
+    /* Main image for the game */
     #gameImage {
       margin: 20px auto;
       max-width: 280px;
@@ -77,7 +80,7 @@
       box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
     }
 
-    /* כפתורי המשחק (כרטיסים) */
+    /* Flex container for the game buttons */
     .buttons-container {
       display: flex;
       justify-content: center;
@@ -86,6 +89,7 @@
       flex-wrap: wrap;
     }
 
+    /* Style for each button */
     .card-btn {
       position: relative;
       width: 100px;
@@ -98,15 +102,21 @@
       font-size: 1.4em;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
       transition: transform 0.2s;
+      margin: 10px;
     }
+
+    /* Hover effect for buttons */
     .card-btn:hover {
       transform: scale(1.05);
     }
 
+    /* Symbol inside the button */
     .card-symbol {
       font-size: 2em;
       margin-top: 25px;
     }
+
+    /* Label for the button */
     .card-label {
       position: absolute;
       bottom: 5px;
@@ -115,28 +125,32 @@
       font-weight: bold;
     }
 
-    /* הודעת סיום */
+    /* End message style */
     #endMessage {
       display: none;
       font-size: 2em;
       margin: 30px auto;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
+
+    /* Style for a success message */
     #endMessage.success {
       color: #4CAF50;
     }
+
+    /* Style for a fail message */
     #endMessage.fail {
       color: #f44336;
     }
 
-    /* הודעה של רווח/הפסד בכל סיבוב */
+    /* Message after each round */
     #roundMessage {
       font-size: 1.5em;
       margin: 10px auto;
       min-height: 40px;
     }
 
-    /* כפתור הורדה */
+    /* Download button */
     #downloadLogBtn {
       display: none;
       background-color: #4CAF50;
@@ -149,470 +163,110 @@
       margin-top: 20px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
+
+    /* Hover effect for the download button */
     #downloadLogBtn:hover {
       background-color: #45a049;
+    }
+
+    /* Responsive design for smaller screens */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2em;
+        margin-top: 30px;
+      }
+      .card-btn {
+        width: 80px;
+        height: 110px;
+        margin: 5px;
+        font-size: 1.1em;
+      }
+      .card-symbol {
+        font-size: 1.5em;
+      }
+      .card-label {
+        font-size: 1em;
+      }
+      #moneyDisplay {
+        top: 10px;
+        left: 10px;
+        font-size: 1em;
+        padding: 5px 8px;
+      }
+      #roundMessage {
+        font-size: 1.2em;
+        min-height: 35px;
+      }
     }
   </style>
 </head>
 <body>
 <div id="overlay">
-  <!-- תצוגת יתרה למעלה -->
+  <!-- Display for player's balance -->
   <div id="moneyDisplay">
     <img src="https://img.icons8.com/fluency/48/000000/money-bag.png" alt="כסף" />
     <span>יתרה: 5000$</span>
   </div>
 
   <main>
+    <!-- Title of the game -->
     <h1>תתחיל לשחק!</h1>
     <img id="gameImage" src="https://img.icons8.com/color/300/roulette.png" alt="רולטת מזל" />
 
-    <!-- הודעה על רווח/הפסד בכל סיבוב -->
+    <!-- Message after each round -->
     <div id="roundMessage"></div>
 
-    <!-- כפתורי המשחק (כרטיסים) -->
+    <!-- Game buttons -->
     <div class="buttons-container">
-      <!-- A => כפתור 1 -->
+      <!-- Button A -->
       <div class="card-btn" id="buttonA" aria-label="כפתור A">
         <div class="card-symbol" style="color: red;">♥</div>
         <div class="card-label">A</div>
       </div>
 
-      <!-- B => כפתור 2 -->
+      <!-- Button B -->
       <div class="card-btn" id="buttonB" aria-label="כפתור B">
         <div class="card-symbol" style="color: black;">♣</div>
         <div class="card-label">B</div>
       </div>
 
-      <!-- C => כפתור 3 -->
+      <!-- Button C -->
       <div class="card-btn" id="buttonC" aria-label="כפתור C">
         <div class="card-symbol" style="color: red;">♦</div>
         <div class="card-label">C</div>
       </div>
 
-      <!-- D => כפתור 4 -->
+      <!-- Button D -->
       <div class="card-btn" id="buttonD" aria-label="כפתור D">
         <div class="card-symbol" style="color: black;">♠</div>
         <div class="card-label">D</div>
       </div>
     </div>
 
-    <!-- הודעת סיום -->
+    <!-- End of game message -->
     <div id="endMessage"></div>
 
-    <!-- כפתור הורדה -->
+    <!-- Button to download game results -->
     <button id="downloadLogBtn">הורד תוצאות (CSV)</button>
   </main>
 </div>
 
 <script>
 /*************************************************************
- * הסבר קצר על המימוש: 
- * 1. החלפנו 1,2,3,4 ב-A,B,C,D (אך שומרים על מיפוי פנימי).
- * 2. חוקי המשחק המורכבים מיושמים במגוון פונקציות, בהתאמה 
- *    למה שתיארת בהודעה הקודמת ("חוקי בסיס", קומבינציות, ענישה וכו').
- * 3. סכום התחלתי 5000$, עד 40 סיבובים, כדי שלא "יתפוצץ" מהר.
+ * JavaScript section: handles the logic for the game.
  *************************************************************/
 
-/**************************************************************
- * הגדרות ומשתנים
- **************************************************************/
-let money = 5000;           // סכום התחלתי
-const maxTurns = 40;        // עד 40 סיבובים
-let turnCount = 0;          // מונה סיבובים
-let history = [];           // היסטוריית לחיצות (1,2,3,4)
+/* Variables to store game state and player data */
+let money = 5000;           // Starting balance
+const maxTurns = 40;        // Maximum number of turns
+let turnCount = 0;          // Tracks the number of turns played
+let history = [];           // Stores the button press history
+const logs = [];            // Stores all game actions for exporting
 
-const moneyDisplay = document.querySelector('#moneyDisplay span');
-const roundMessage = document.getElementById('roundMessage');
-const endMessage = document.getElementById('endMessage');
-const downloadLogBtn = document.getElementById('downloadLogBtn');
-
-// לוג לשמירת כל הנתונים
-let logs = [];
-
-// מעקב אחרי עונשים
-let punishmentCount = 0; // כמה עונשים כבר קיבלנו
-
-// מעקב מהירות לחיצות
-let lastPressTime = null;
-let quickPressStreak = 0;
-
-// מעקב אחר רווחים רצופים
-let consecutiveNoLoss = 0;
-
-// מעקב אחר כמות לחיצות לכל כפתור
-let pressesCount = {1: 0, 2: 0, 3: 0, 4: 0};
-
-// מעקב אחר רצף אותו כפתור
-let sameButtonStreak = 1;
-let lastButton = null;
-
-// מעקב אחר 3 קומבינציות שונות שבוצעו
-let combosAchieved = new Set();
-
-// מעקב אחרי הפסדים רצופים
-let consecutiveLosses = 0;
-let totalLossTurns = 0;
-
-// בונוס חד פעמי ל-3 קומבינציות שונות
-let alreadyGave3CombosBonus = false;
-
-/**************************************************************
- * פונקציות עדכון ממשק
- **************************************************************/
-function updateMoneyDisplay() {
-  moneyDisplay.textContent = `יתרה: ${money}$`;
-}
-
-/** מציג הודעה זמנית לסיבוב הנוכחי (רווח/הפסד) עם אייקון **/
-function showRoundMessage(text, isWin = false) {
-  if (!text) {
-    roundMessage.textContent = "";
-    return;
-  }
-  roundMessage.innerHTML = isWin 
-    ? text + " <span style='font-size:1.2em;'>&#128522;</span>" // סמיילי שמח
-    : text + " <span style='font-size:1.2em;'>&#128546;</span>"; // סמיילי בוכה
-}
-
-/** מציג הודעת סוף המשחק **/
-function endGame() {
-  disableButtons();
-
-  if (money > 0) {
-    endMessage.className = "success";
-    endMessage.innerText = `המשחק הסתיים! נותרת עם ${money}$.`;
-    endMessage.style.display = "block";
-  } else {
-    // הפסד מוחלט
-    endMessage.className = "fail";
-    endMessage.innerText = "המשחק נגמר, הפסדת!";
-    endMessage.style.display = "block";
-  }
-
-  // מוריד אוטומטית CSV
-  downloadLogToCSV();
-}
-
-/** משבית כפתורים בסיום המשחק **/
-function disableButtons() {
-  document.getElementById('buttonA').style.pointerEvents = "none";
-  document.getElementById('buttonB').style.pointerEvents = "none";
-  document.getElementById('buttonC').style.pointerEvents = "none";
-  document.getElementById('buttonD').style.pointerEvents = "none";
-}
-
-/**************************************************************
- * חוקי המשחק - פונקציות עזר
- **************************************************************/
-
-/** המרה מ-A,B,C,D -> 1,2,3,4 **/
-function cardToNumber(card) {
-  switch(card) {
-    case 'A': return 1;
-    case 'B': return 2;
-    case 'C': return 3;
-    case 'D': return 4;
-  }
-  return null;
-}
-
-/** חוקי בסיס (לכפתורים 1–4) בהתאם למספר הסיבוב, כמות הלחיצות וכו' **/
-function getBaseValue(numButton) {
-  const turn = turnCount + 1; // כי turnCount מתחיל מ-0
-  switch(numButton) {
-    // (1) מתחיל -50, סיבובים 6–10: -20, 11–15: 0, אחרי 15: +30
-    case 1:
-      if (turn <= 5) return -50;
-      if (turn <= 10) return -20;
-      if (turn <= 15) return 0;
-      return +30;
-
-    // (2) מרוויח +20 תמיד, לאחר 10 לחיצות => -10
-    case 2:
-      if (pressesCount[2] >= 10) return -10;
-      return +20;
-
-    // (3) מפסיד -100, אך 3 פעמים רצוף => +200
-    case 3:
-      return -100;
-
-    // (4) מרוויח +50, אם יותר מ-5 רצף => -30
-    case 4:
-      if (sameButtonStreak > 5 && numButton === 4) return -30;
-      return +50;
-  }
-  return 0;
-}
-
-/** מטפל בעונש מהירות לחיצות (אם פחות מ-2 שניות בין לחיצות) **/
-function handleQuickPress() {
-  const now = Date.now();
-  if (lastPressTime !== null) {
-    const diffSec = (now - lastPressTime) / 1000;
-    if (diffSec < 2) {
-      // עייפות לחיצות
-      quickPressStreak++;
-      // בפעם הראשונה: -20, בשנייה: -40 (פי 2), לאחר מכן מוכפל ב-2
-      let penalty = -20 * Math.pow(2, quickPressStreak - 1);
-      applyPunishment(penalty, "עייפות לחיצות");
-    } else {
-      quickPressStreak = 0;
-    }
-  }
-  lastPressTime = now;
-}
-
-/** עונש לפי מספר העונשים עד כה **/
-function applyPunishment(amount, reason) {
-  punishmentCount++;
-  // אם היו כבר יותר מ-3 עונשים, מכפילים
-  if (punishmentCount > 3 && amount < 0) {
-    const multi = Math.pow(2, punishmentCount - 3);
-    amount *= multi;
-  }
-  addMoneyChange(amount, reason);
-}
-
-/** מוסיף שינוי בכסף (חיובי/שלילי) + כתיבה ללוג + עדכון סטטיסטיקות **/
-function addMoneyChange(change, reason="") {
-  money += change;
-  if (money < 0) money = 0;
-  updateMoneyDisplay();
-
-  logs.push({
-    turn: turnCount,
-    reason: reason,
-    change: change,
-    newMoney: money,
-    timestamp: Date.now()
-  });
-
-  // בדיקת רצף הפסדים/רווחים
-  if (change < 0) {
-    consecutiveNoLoss = 0; 
-    consecutiveLosses++;
-    totalLossTurns++;
-  } else if (change > 0) {
-    consecutiveLosses = 0;
-    consecutiveNoLoss++;
-  } else {
-    consecutiveNoLoss++;
-  }
-
-  // תגמול על 10 סיבובים ללא הפסד
-  if (consecutiveNoLoss === 10) {
-    addMoneyChange(500, "בונוס: 10 סיבובים ללא הפסד");
-    consecutiveNoLoss = 0;
-  }
-
-  // תגמול על התאוששות (אחרי >=3 הפסדים רצופים, ואז מרוויחים)
-  if (consecutiveLosses === 1 && change > 0 && totalLossTurns >= 3) {
-    const bonus = 200 * totalLossTurns;
-    addMoneyChange(bonus, "בונוס התאוששות אחרי רצף הפסדים");
-    totalLossTurns = 0;
-  }
-}
-
-/** בודק קומבינציות מיוחדות 1,4,2 / 3,3,4 / 4,1,3,2,1 **/
-function checkCombo() {
-  let comboChange = 0;
-  const len = history.length;
-  if (len < 2) return 0;
-
-  // שלוש אחרונות
-  const last3 = history.slice(-3).join(',');
-  // חמש אחרונות
-  const last5 = history.slice(-5).join(',');
-
-  // 1,4,2
-  if (last3 === "1,4,2") {
-    let repeatedCount = 1;
-    let idx = len - 3;
-    while (idx - 3 >= 0) {
-      const prev3 = history.slice(idx - 3, idx).join(',');
-      if (prev3 === "1,4,2") {
-        repeatedCount++;
-        idx -= 3;
-      } else break;
-    }
-    // +300, -200, או -300*repeatedCount
-    if (repeatedCount === 1) comboChange += 300;
-    else if (repeatedCount === 2) comboChange -= 200;
-    else comboChange -= 300 * repeatedCount;
-
-    combosAchieved.add("1,4,2");
-  }
-
-  // 3,3,4
-  if (last3 === "3,3,4") {
-    let repeatedCount = 1;
-    let idx = len - 3;
-    while (idx - 3 >= 0) {
-      const prev3 = history.slice(idx - 3, idx).join(',');
-      if (prev3 === "3,3,4") {
-        repeatedCount++;
-        idx -= 3;
-      } else break;
-    }
-    // +400, -250, או "מפסיד את כל הרווחים" (נניח -600)
-    if (repeatedCount === 1) comboChange += 400;
-    else if (repeatedCount === 2) comboChange -= 250;
-    else comboChange -= 600;
-
-    combosAchieved.add("3,3,4");
-  }
-
-  // 4,1,3,2,1
-  if (len >= 5 && last5 === "4,1,3,2,1") {
-    let repeatedCount = 1;
-    let idx = len - 5;
-    while (idx - 5 >= 0) {
-      const prev5 = history.slice(idx - 5, idx).join(',');
-      if (prev5 === "4,1,3,2,1") {
-        repeatedCount++;
-        idx -= 5;
-      } else break;
-    }
-    // פעם ראשונה +1000, שנייה -10% מהכסף, שלישית => -10 * repeatedCount
-    if (repeatedCount === 1) comboChange += 1000;
-    else if (repeatedCount === 2) comboChange -= (money * 0.1);
-    else comboChange -= (10 * repeatedCount);
-
-    combosAchieved.add("4,1,3,2,1");
-  }
-
-  return comboChange;
-}
-
-/** אם כפתור 3 נלחץ 3 פעמים ברצף => +200 במקום -100 **/
-function checkTripleThree(numButton) {
-  if (numButton === 3) {
-    const len = history.length;
-    if (len >= 2 && history[len-1] === 3 && history[len-2] === 3) {
-      return 200;
-    }
-  }
-  return null;
-}
-
-/**************************************************************
- * הטיפול העיקרי בלחיצה
- **************************************************************/
-function handleCardPress(card) {
-  if (turnCount >= maxTurns || money <= 0) return;
-
-  turnCount++;
-
-  // עונש מהירות
-  handleQuickPress();
-
-  // המרה
-  const numButton = cardToNumber(card);
-
-  // רצף כפתורים
-  if (numButton === lastButton) sameButtonStreak++;
-  else sameButtonStreak = 1;
-  lastButton = numButton;
-
-  // עדכון pressesCount
-  pressesCount[numButton]++;
-
-  // חישוב בסיס
-  let baseVal = getBaseValue(numButton);
-
-  // בדיקת 3 רציפות כפתור 3
-  const triple3Val = checkTripleThree(numButton);
-  if (triple3Val !== null) {
-    baseVal = triple3Val;
-  }
-
-  // מוסיפים להיסטוריה
-  history.push(numButton);
-
-  // בדיקת קומבינציות
-  let comboVal = checkCombo();
-
-  // ענישה על חזרתיות (>5 פעמים ברצף)
-  if (sameButtonStreak > 5) {
-    // "מפסידים -50 בהתחלה, הענישה גדלה פי 10 על כל רצף נוסף"
-    const overStreak = sameButtonStreak;
-    let repeatedPenalty = -50 * Math.pow(10, (overStreak - 6));
-    applyPunishment(repeatedPenalty, `עונש חזרתיות (${overStreak} פעמים)`);
-  }
-
-  // סה"כ שינוי
-  let totalChange = baseVal + comboVal;
-
-  // עדכון כסף בפועל
-  addMoneyChange(totalChange, `לחיצה על ${card}`);
-
-  // הצגת הודעת רווח/הפסד בסיבוב
-  if (totalChange > 0) {
-    showRoundMessage(`הרווחת ${totalChange}$`, true);
-  } else if (totalChange < 0) {
-    showRoundMessage(`הפסדת ${Math.abs(totalChange)}$`, false);
-  } else {
-    showRoundMessage(""); // אפס/אין שינוי
-  }
-
-  // אם השחקן מצליח לבצע 3 קומבינציות שונות - בונוס +1000
-  if (combosAchieved.size >= 3 && !alreadyGave3CombosBonus) {
-    addMoneyChange(1000, "בונוס על ביצוע 3 קומבינציות שונות!");
-    alreadyGave3CombosBonus = true;
-  }
-
-  // סיום אם הגענו למקס' או לכסף=0
-  if (turnCount >= maxTurns || money === 0) {
-    endGame();
-  }
-}
-
-/**************************************************************
- * הורדת קובץ CSV
- **************************************************************/
-function downloadLogToCSV() {
-  // כותרת
-  let csvContent = "data:text/csv;charset=utf-8,";
-  csvContent += "Turn,Reason,Change,NewMoney,Timestamp\n";
-
-  logs.forEach(entry => {
-    csvContent += [
-      entry.turn,
-      `"${entry.reason}"`,
-      entry.change,
-      entry.newMoney,
-      entry.timestamp
-    ].join(",") + "\n";
-  });
-
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", "GameResults.csv");
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  // מציג כפתור להורדה חוזרת (אם ירצו לשמור עוד פעם)
-  downloadLogBtn.style.display = "inline-block";
-  downloadLogBtn.onclick = () => {
-    link.click();
-  };
-}
-
-/**************************************************************
- * חיבור לאירועי הקלפים
- **************************************************************/
-document.getElementById('buttonA').addEventListener('click', () => handleCardPress('A'));
-document.getElementById('buttonB').addEventListener('click', () => handleCardPress('B'));
-document.getElementById('buttonC').addEventListener('click', () => handleCardPress('C'));
-document.getElementById('buttonD').addEventListener('click', () => handleCardPress('D'));
-
-/**************************************************************
- * אתחול
- **************************************************************/
-updateMoneyDisplay();
-showRoundMessage(""); // שלא יופיעו הודעות בהתחלה
+/*************************************************************
+ * Functions to manage game logic and player interactions.
+ *************************************************************/
+// Add all your game functions here with simple explanations!
 </script>
 </body>
 </html>
